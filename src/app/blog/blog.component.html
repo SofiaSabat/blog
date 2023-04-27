@@ -1,0 +1,150 @@
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  </head>  
+<div class="wrappper">
+        <header class="header header-block">
+            <div class="header-block__title">Angular blog</div>
+                <div  class="header-block__actions actions">
+                 <ng-container *ngIf="!isLogged"> 
+                 <div>
+                        <button class="actions__sign-in btn" (click)="openSignIn()">Sign in</button>
+                        <button class="actions__sign-up btn"(click)="openSignUp()">Sign up</button>
+                 </div>
+                 </ng-container>
+                 <ng-container *ngIf="isLogged">
+                   <div>
+                       <button class="actions__add-post btn" (click)="addPost()">Add post</button>
+                        <div class="actions__name btn">{{name | titlecase }}</div>
+                       <button class="actions__sign-out btn" (click)="signOut()">Sign out</button>
+                   </div>
+                 </ng-container>             
+              </div>
+        </header>
+    <div class="container">
+        <main class="main main-content">
+          <div class="main-content__post post">
+            <div class="post__box" *ngFor="let item of posts index as i">
+                <div class="post__content-post content-post">
+                 <div class="content-post__title">{{item.topic}}</div>
+                  <div class="content-post__creator">Posted by: {{item.postedBy | titlecase}}</div>
+                  <div class="content-post__text">{{item.message}}</div>
+                </div>
+                <div class="post__actions actions-post">
+                    <div class="actions-post__data">{{item.date}}</div>
+                    <div class="actions-post__buttons">
+                        <ng-container *ngIf="checkEnabled(i)">                        
+                            <button class="actions-post__edit-post btn" (click)="editPost(i)">Edit</button>
+                            <button class="actions-post__delete-post btn" (click)="deletePost(i)" >Delete</button>
+                        </ng-container>                        
+                    </div>
+                </div>
+            </div>
+          </div>
+        </main>
+   </div>
+<ng-container *ngIf="isAddingPost">
+   <div class="modal__wrapper">
+           <div class="modal-add-post">
+            <div class="modal-add-post__header">
+             <div class="modal-add-post__header-title">Add post</div>
+             <div class="modal-add-post__header-action">
+                <div class="btn btn-close" (click)="closeModal()">
+                    <mat-icon>close</mat-icon>  
+                </div>
+             </div>
+            </div>
+            <div class="modal-add-post__body">
+            <div class="modal-add-post__body-inputs">
+                <label for="title">Title:</label>
+                <input type="text" name="title"  id="title"
+                 placeholder="title here.." [(ngModel)]="titlePost">
+                <label for="text">Text:</label>
+                <textarea placeholder="text here.." 
+                  name="text" id="text"
+                 cols="30"rows="5" [(ngModel)]="textPost">
+                </textarea>
+            </div>
+            </div>
+            <div class="modal-add-post__footer">
+                <div class="modal-add-post__footer-actions">
+                    <button class="btn btn-close1" 
+                    (click)="closeModal()">Close
+                    </button>
+                    <ng-container *ngIf="!isEditPost">
+                        <button class="btn btn-post" 
+                        (click)="postPost()" [disabled]="!titlePost || !textPost">Post
+                        </button>
+                    </ng-container>
+                    <ng-container *ngIf="isEditPost">
+                        <button class="btn btn-post" 
+                        (click)="saveEditPost()">Edit
+                        </button>
+                    </ng-container>                
+                </div>
+            </div>
+           </div>
+   </div >
+</ng-container>
+<ng-container *ngIf="isSigningUp">
+    <div class="modal__wrapper">
+            <div class="modal-sign-up">
+                <div class="modal-sign-up__header">
+                    <p class="modal-sign-up__title">Sign up</p>
+                    <div class="btn btn-close" (click)="closeModal()">
+                        <mat-icon>close</mat-icon>  
+                    </div>
+                </div >
+             <div class="modal-sign-up__body-inputs">
+                <label for="userName">Username:</label>
+                <input type="text" name="userName"  id="userName"
+                 placeholder="Username here.." [(ngModel)]="userName">
+                 <label for="title">Email:</label>
+                 <input type="text" name="email"  id="email"
+                  placeholder="email here.." [(ngModel)]="emailSignUp">
+                 <label for="text">Password:</label>
+                 <input type="text" name="password"  id="password"
+                  placeholder="password here.." [(ngModel)]="passwordSignUp">
+             </div>
+             <div class="modal-sign-up__actions">
+                <button class="btn btn-close1" 
+                (click)="closeModal()">Close
+                </button>
+                <button class="btn btn-post" 
+                (click)="submitSignUp()" [disabled]="!userName || !emailSignUp || !passwordSignUp" >Submit
+                </button>
+            </div>
+        </div>
+    </div>
+ </ng-container>
+ <ng-container *ngIf="isSigningIn">
+    <div class="modal__wrapper">
+            <div class="modal-sign-in">
+                <div class="modal-sign-in__header">
+                    <p class="modal-sign-in__title">Sign in</p>
+                    <div class="btn btn-close" (click)="closeModal()">
+                        <mat-icon>close</mat-icon>  
+                    </div>
+                </div >
+             <div class="modal-sign-in__body-inputs">
+                 <label for="title">Email:</label>
+                 <input type="text" name="email"  id="email"
+                  placeholder="email here.." [(ngModel)]="emailSignIn">
+                 <label for="text">Password:</label>
+                 <input type="text" name="password"  id="password"
+                  placeholder="password here.." [(ngModel)]="passwordSignIn">
+             </div>
+             <div *ngIf="error" class="modal-sign-in__error">
+                <p>There is no such a user </p>
+             </div>
+             <div class="modal-sign-up__actions">
+                <button class="btn btn-close1" 
+                (click)="closeModal()">Close
+                </button>
+                <button class="btn btn-post" 
+                (click)="submitSignIn()" [disabled]="!emailSignIn || !passwordSignIn" >Submit
+                </button>
+            </div>
+        </div>
+    </div>
+ </ng-container>
+</div>
